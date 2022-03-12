@@ -22,6 +22,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.axonframework:axon-spring-boot-starter:4.5.8'
+	implementation 'org.springframework.boot:spring-boot-starter-validation:2.6.4'
 	implementation project(':user.core')
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

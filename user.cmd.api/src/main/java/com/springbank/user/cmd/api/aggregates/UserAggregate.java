@@ -1,6 +1,7 @@
 package com.springbank.user.cmd.api.aggregates;
 
 import com.springbank.user.cmd.api.commands.RegisterUserCommand;
+import com.springbank.user.cmd.api.commands.RemoveUserCommand;
 import com.springbank.user.cmd.api.commands.UpdateUserCommand;
 import com.springbank.user.cmd.api.security.PasswordEncoder;
 import com.springbank.user.cmd.api.security.PasswordEncoderImpl;
@@ -8,6 +9,7 @@ import com.springbank.user.core.events.UserRegisterEvent;
 import com.springbank.user.core.events.UserRemoveEvent;
 import com.springbank.user.core.events.UserUpdatedEvent;
 import com.springbank.user.core.models.User;
+import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
@@ -16,6 +18,7 @@ import org.axonframework.spring.stereotype.Aggregate;
 
 import java.util.UUID;
 
+@Slf4j
 @Aggregate
 public class UserAggregate {
     @AggregateIdentifier
@@ -30,6 +33,7 @@ public class UserAggregate {
 
     @CommandHandler
     public UserAggregate(RegisterUserCommand command) {
+        log.info("Registrando usuário: {}", command);
         passwordEncoder = new PasswordEncoderImpl();
 
         var newUser = command.getUser();
@@ -65,7 +69,7 @@ public class UserAggregate {
     }
 
     @CommandHandler
-    public void handle(RegisterUserCommand command) {
+    public void handle(RemoveUserCommand command) {
         var event = new UserRemoveEvent();
         event.setId(command.getId());
 
@@ -74,6 +78,7 @@ public class UserAggregate {
 
     @EventSourcingHandler
     public void on(UserRegisterEvent event) {
+        log.info("Event Sourcing Registrando usuário: {}", event);
         this.id = event.getId();
         this.user = event.getUser();
     }
