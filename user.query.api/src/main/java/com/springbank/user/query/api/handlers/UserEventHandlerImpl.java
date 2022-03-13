@@ -39,6 +39,7 @@ public class UserEventHandlerImpl implements UserEventHandler {
     @EventHandler
     @Override
     public void on(UserRemoveEvent event) {
+        log.info("Event Handler Remove user: {}", event);
         userRepository.deleteById(event.getId());
     }
 }
