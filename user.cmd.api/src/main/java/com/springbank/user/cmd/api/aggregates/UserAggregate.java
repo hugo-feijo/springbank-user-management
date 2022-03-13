@@ -33,7 +33,7 @@ public class UserAggregate {
 
     @CommandHandler
     public UserAggregate(RegisterUserCommand command) {
-        log.info("Registrando usuário: {}", command);
+        log.info("Register user: {}", command);
         passwordEncoder = new PasswordEncoderImpl();
 
         var newUser = command.getUser();
@@ -53,6 +53,7 @@ public class UserAggregate {
 
     @CommandHandler
     public void handle(UpdateUserCommand command) {
+        log.info("Updating user: {}", command);
         var updatedUser = command.getUser();
         updatedUser.setId(command.getId());
         var password = updatedUser.getAccount().getPassword();
@@ -78,13 +79,14 @@ public class UserAggregate {
 
     @EventSourcingHandler
     public void on(UserRegisterEvent event) {
-        log.info("Event Sourcing Registrando usuário: {}", event);
+        log.info("Event Sourcing Register user: {}", event);
         this.id = event.getId();
         this.user = event.getUser();
     }
 
     @EventSourcingHandler
     public void on(UserUpdatedEvent event) {
+        log.info("Event Sourcing Updating user: {}", event);
         this.user = event.getUser();
     }
 

@@ -24,13 +24,14 @@ public class UserEventHandlerImpl implements UserEventHandler {
     @EventHandler
     @Override
     public void on(UserRegisterEvent event) {
-        log.info("Event Handler Registrando usuário: {}", event);
+        log.info("Event Handler Register user: {}", event);
         userRepository.save(event.getUser());
     }
 
     @EventHandler
     @Override
     public void on(UserUpdatedEvent event) {
+        log.info("Event Handler Updating user: {}", event);
         userRepository.save(event.getUser());
 
     }
