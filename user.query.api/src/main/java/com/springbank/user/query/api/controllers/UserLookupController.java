@@ -7,6 +7,7 @@ import com.springbank.user.query.api.queries.FindUserByIdQuery;
 import com.springbank.user.query.api.queries.SearchUsersQuery;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
+import org.axonframework.queryhandling.QueryGateway;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,17 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/api/v1/user")
 public class UserLookupController {
-    private final UserQueryService userQueryService;
+    private final QueryGateway queryGateway;
 
-    public UserLookupController(UserQueryService userQueryService) {
-        this.userQueryService = userQueryService;
+    public UserLookupController(QueryGateway queryGateway) {
+        this.queryGateway = queryGateway;
     }
 
     @GetMapping()
     public ResponseEntity<UserLookupResponse> getAllUsers() {
         try {
             var query = new FindAllUsersQuery();
-            var response = userQueryService.getAllUsers(query);
+            var response = queryGateway.query(query, ResponseTypes.instanceOf(UserLookupResponse.class)).join();
 
             if(response == null || response.getUsers() == null)
                 return ResponseEntity.noContent().build();
@@ -47,7 +48,7 @@ public class UserLookupController {
     public ResponseEntity<UserLookupResponse> getUserById(@PathVariable String id) {
         try {
             var query = new FindUserByIdQuery(id);
-            var response = userQueryService.getUserById(query);
+            var response = queryGateway.query(query, ResponseTypes.instanceOf(UserLookupResponse.class)).join();
 
             if(response == null || response.getUsers() == null)
                 return ResponseEntity.noContent().build();
@@ -65,7 +66,7 @@ public class UserLookupController {
     public ResponseEntity<UserLookupResponse> searchUserByFilter(@PathVariable String filter) {
         try {
             var query = new SearchUsersQuery(filter);
-            var response = userQueryService.searchUsers(query);
+            var response = queryGateway.query(query, ResponseTypes.instanceOf(UserLookupResponse.class)).join();
 
             if(response == null || response.getUsers() == null)
                 return ResponseEntity.noContent().build();
